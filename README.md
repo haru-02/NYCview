@@ -5,6 +5,10 @@
 This is a simple agent that fetches location names from a file in the project and
 queries the usnplash api, scoring the images with metadata and finally aggregating the best results.
 
+## Reasoning and Architecture:
+
+The design choices and the architecture of code is explained [here](./NYCview.md)
+
 ## Getting Started:
 
 To run the project, please have the latest version of docker and docker compose installed.
