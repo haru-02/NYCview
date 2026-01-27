@@ -1,0 +1,12 @@
+[
+  { "name": "Empire State Building", "lat": 40.7484, "lng": -73.9857 },
+  { "name": "Statue of Liberty", "lat": 40.6892, "lng": -74.0445 },
+  { "name": "Grand Central Terminal", "lat": 40.7527, "lng": -73.9772 },
+  { "name": "Brooklyn Bridge", "lat": 40.7061, "lng": -73.9969 },
+  { "name": "The High Line", "lat": 40.748, "lng": -74.0048 },
+  { "name": "Flatiron Building", "lat": 40.7411, "lng": -73.9897 },
+  { "name": "Bethesda Terrace", "lat": 40.7738, "lng": -73.9708 },
+  { "name": "The Metropolitan Museum of Art", "lat": 40.7794, "lng": -73.9632 },
+  { "name": "One World Trade Center", "lat": 40.7127, "lng": -74.0134 },
+  { "name": "Radio City Music Hall", "lat": 40.7599, "lng": -73.9799 }
+]

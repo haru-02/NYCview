@@ -1,0 +1,9 @@
+services:
+  image-agent:
+    build: .
+    container_name: nyc_poi_agent
+    volumes:
+      - ./output:/app/output
+    environment:
+      - PYTHONUNBUFFERED=1
+      - UNSPLASH_ACCESS_KEY=your_key_here
