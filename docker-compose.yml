@@ -6,4 +6,6 @@ services:
       - ./output:/app/output
     environment:
       - PYTHONUNBUFFERED=1
-      - UNSPLASH_ACCESS_KEY=your_key_here
+      - UNSPLASH_ACCESS_KEY=KEY_HERE
+      - PEXELS_API_KEY=KEY_HERE
+      - EMAIL=email@gmail.com
