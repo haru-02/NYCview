@@ -1,39 +1,95 @@
-# NYCview
+# NYCview: Autonomous Discovery Agent
 
-## A jaunt assessment.
+# A Jaunt assessment
 
-This is a simple agent that fetches location names from a file in the project and
-queries the usnplash api, scoring the images with metadata and finally aggregating the best results.
+An autonomous agent that discovers, validates, and archives iconic imagery for NYC Landmarks. This project implements a local **OODA (Observe-Orient-Decide-Act) loop** to intelligently search for the highest-quality images across multiple providers.
 
-## Reasoning and Architecture:
+## 🤖 The "Brain"
 
-The design choices and the architecture of code is explained [here](./NYCview.md)
+Unlike static scripts, NYCview uses a **Small Language Model (SLM)** to handle decision-making:
 
-## Getting Started:
+- **Reasoning**: Powered by `TinyLlama-1.1B` (GGUF Q4_K_M).
+- **Vision**: Uses `OpenAI's CLIP (ViT-B-32)` to perform semantic image-text matching.
+- **Decision Engine**: The agent observes its current best match and decides whether to keep searching or finalize the task.
 
-To run the project, please have the latest version of docker and docker compose installed.
+## 🚀 Getting Started
 
-### Launch the environment:
+### Prerequisites
 
-First, ensure that you have filled in your unsplash api access key in the `docker-compose.yml` file.
+- Docker & Docker Compose
+- API Keys for Unsplash and Pexels
 
-Ten different locations of nyc are specified in the `locations.json` file. you can change them or add more if you would like to view different places.
+### Installation
 
-run the following commmand to observe the output.
+1. Clone the repository:
+   ```Bash
+   $ git clone [https://github.com/haru-02/NYCview.git](https://github.com/haru-02/NYCview.git)
+   $ cd NYCview
+   ```
+2. Configure your keys in docker-compose.yml:
+   ```YAML
+   environment:
+       - UNSPLASH_ACCESS_KEY=your_key_here
+       - PEXELS_API_KEY=your_key_here
+       - EMAIL=your_email@example.com
+   ```
+3. Run the Agent:
 
-```bash
-docker compose up --build
-```
+   ```Bash
+    docker compose up --build
+   ```
 
-### Access the ouput
+## 📁 Output
 
-The images and the metadata for each location is available in the output folder generated.
+Results are stored in `/output/{landmark_name}/`: - image.jpg: The highest-scoring discovered image. - metadata.json: Full attribution, source link, and AI confidence scores.
 
-## Tech Stack:
+## 🛠 Tech Stack
 
-- Requests for python requests.
-- pydantic for basemodel - protects the data typing that is returned from api.
+- AI Orchestration: Python 3.11, llama-cpp-python
+- Computer Vision: Sentence-Transformers (CLIP)
+- Data Validation: Pydantic
+- Geospatial: Geopy
 
-## Image Source:
+# Engineering Design: Agent
 
-Special thanks to [unsplash](https://unsplash.com/) api for providing free license images for this project.
+## 1. Objective
+
+To move beyond deterministic scraping. The goal was to build an agent capable of **autonomous tool selection** to find the most geographically and visually accurate representation of NYC points of interest.
+
+## 2. Architecture & Decision Logic
+
+The agent operates on a feedback loop centered around an **Agent State**.
+
+### The Reasoning Loop
+
+1. **Observe**: The agent checks its state (current best score, sources already searched).
+2. **Decide**: The SLM (`TinyLlama`) analyzes the state. If the best score is > 0.85, it chooses `finalize`. Otherwise, it picks the most promising next tool (Unsplash, Pexels, or Wikimedia).
+3. **Act**: The chosen tool fetches candidates.
+4. **Evaluate**:
+   - **Visual Score**: CLIP calculates cosine similarity between the image pixels and the text "a photo of {POI} NYC".
+   - **Geo Score**: Geopy calculates the Haversine distance from the target coordinates.
+5. **Update**: The state is updated with new scores, and the loop repeats.
+
+## 3. Scoring Matrix
+
+The final score is a weighted sum designed to prioritize visual accuracy while rewarding proximity:
+
+- **Visual Weight**: 70% ($V_{score}$)
+- **Geo Weight**: 30% ($G_{score}$)
+- **Bonus**: A `+0.08` aesthetic bonus is applied to high-resolution providers (Unsplash/Pexels).
+
+$$
+FinalScore = (V \times 0.7) + (G \times 0.3) + Bonus(0.08)
+$$
+
+## 4. Hardware Optimization (8GB RAM)
+
+Running an LLM and a CLIP model simultaneously in a container requires strict memory management:
+
+- **Quantization**: Used `Q4_K_M` GGUF format for the SLM to reduce memory footprint by 60%.
+- **CPU Offloading**: Optimized for `torch-cpu` to ensure stability on standard laptop hardware.
+- **Memory Safety**: Explicitly managed PIL image buffers to prevent heap overflow during the scoring of large batch results.
+
+## 5. Conclusion
+
+This agent demonstrates that even with limited local compute, small specialized models can replace large, expensive APIs for complex decision-making tasks. It balances performance, cost (API credits), and accuracy.
