@@ -6,3 +6,4 @@ requests
 pydantic
 geopy
 pillow
+llama-cpp-python

@@ -1,19 +1,16 @@
-.env
+# AI Models
+models/*.gguf
 
+# Project Output
+output/
+
+# Python
 __pycache__/
 *.py[cod]
 *$py.class
 .venv/
 env/
-venv/
-.pytest_cache/
+.env
 
-output/*/image.jpg
-output/*/metadata.json
-
+# OS
 .DS_Store
-Thumbs.db
-.vscode/
-.idea/
-
-.dockerignore
