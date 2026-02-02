@@ -63,7 +63,7 @@ The agent operates on a feedback loop centered around an **Agent State**.
 ### The Reasoning Loop
 
 1. **Observe**: The agent checks its state (current best score, sources already searched).
-2. **Decide**: The SLM (`TinyLlama`) analyzes the state. If the best score is > 0.85, it chooses `finalize`. Otherwise, it picks the most promising next tool (Unsplash, Pexels, or Wikimedia).
+2. **Decide**: A greedy randomizer algorithm (a varant of the epsilon-greedy algorithm) decides the next course of action in a non-deterministic fashion. Tiebreakers are handled by querying Tiny Llama (SLM), and often acts as the final judge.
 3. **Act**: The chosen tool fetches candidates.
 4. **Evaluate**:
    - **Visual Score**: CLIP calculates cosine similarity between the image pixels and the text "a photo of {POI} NYC".
