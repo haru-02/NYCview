@@ -1,5 +1,5 @@
-from pydantic import BaseModel
-from typing import List, Dict, Optional
+from pydantic import BaseModel, Field
+from typing import List, Dict, Optional, Tuple
 
 class Candidate(BaseModel):
     url: str
@@ -8,7 +8,7 @@ class Candidate(BaseModel):
     author_profile: str
     license_type: str
     license_url: str
-    coords: Optional[tuple] = None
+    coords: Optional[Tuple[float, float]] = None
     description: Optional[str] = None
     v_score: float = 0.0
     g_score: float = 0.5
@@ -21,6 +21,7 @@ class AgentState(BaseModel):
     candidates: List[Candidate] = []
     tried_sources: List[str] = []
     best_candidate: Optional[Candidate] = None
-    status: str = "init" # init, searching, scoring, finalized
-    is_complete: bool = False  # Add this line
-    best_score: float = 0.0    # Add this so main.py can track it
+    is_complete: bool = False
+    best_score: float = 0.0
+    status: str = "init"  # init, searching, scoring, finalized
+    source_pages: Dict[str, int] = {"unsplash": 0, "pexels": 0, "wikimedia": 0}
